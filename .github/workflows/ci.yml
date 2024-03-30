@@ -50,15 +50,18 @@ jobs:
 
     steps:
       - name: Checkout
-        id: checkout
         uses: actions/checkout@v4
 
-      - name: Test Local Action
-        id: test-action
-        uses: ./
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          milliseconds: 2000
+          node-version-file: .node-version
+          cache: npm
 
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Execute Assign Script
+        run: node src/issueComment/assign.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
